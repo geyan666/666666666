@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://dmego.cn/"/>
-  <updated>2017-03-30T18:21:30.349Z</updated>
+  <updated>2017-03-31T01:50:46.334Z</updated>
   <id>http://dmego.cn/</id>
   
   <author>
@@ -14,6 +14,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://dmego.cn/2017/03/31/dmego.cn/"/>
+    <id>http://dmego.cn/2017/03/31/dmego.cn/</id>
+    <published>2017-03-31T01:50:46.278Z</published>
+    <updated>2017-03-31T01:50:46.334Z</updated>
+    
+    <content type="html"><![CDATA[<p>网址:<a href="http://dmego.cn">http://dmego.cn</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;网址:&lt;a href=&quot;http://dmego.cn&quot;&gt;http://dmego.cn&lt;/a&gt;&lt;/p&gt;
+
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>也许</title>

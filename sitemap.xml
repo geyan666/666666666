@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://dmego.cn/2016/11/20/%E4%B9%9F%E8%AE%B8/</loc>
+    <loc>http://dmego.cn/about/index.html</loc>
     
-    <lastmod>2017-03-30T18:21:30.349Z</lastmod>
+    <lastmod>2017-03-31T01:51:44.217Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://dmego.cn/about/index.html</loc>
+    <loc>http://dmego.cn/2017/03/31/dmego.cn/</loc>
     
-    <lastmod>2017-03-30T17:50:56.339Z</lastmod>
+    <lastmod>2017-03-31T01:50:46.334Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://dmego.cn/README.html</loc>
+    
+    <lastmod>2017-03-31T01:48:58.036Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://dmego.cn/2016/11/20/%E4%B9%9F%E8%AE%B8/</loc>
+    
+    <lastmod>2017-03-30T18:21:30.349Z</lastmod>
     
   </url>
   
