@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://dmego.cn/"/>
-  <updated>2017-03-31T01:50:46.334Z</updated>
+  <updated>2017-03-31T09:15:48.218Z</updated>
   <id>http://dmego.cn/</id>
   
   <author>
@@ -16,22 +16,27 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://dmego.cn/2017/03/31/dmego.cn/"/>
-    <id>http://dmego.cn/2017/03/31/dmego.cn/</id>
-    <published>2017-03-31T01:50:46.278Z</published>
-    <updated>2017-03-31T01:50:46.334Z</updated>
+    <title>有些往事</title>
+    <link href="http://dmego.cn/2017/03/11/diary-2017-3-31/"/>
+    <id>http://dmego.cn/2017/03/11/diary-2017-3-31/</id>
+    <published>2017-03-11T02:36:00.000Z</published>
+    <updated>2017-03-31T09:15:48.218Z</updated>
     
-    <content type="html"><![CDATA[<p>网址:<a href="http://dmego.cn">http://dmego.cn</a></p>
+    <content type="html"><![CDATA[<p><img src="/images/diary-2017-3-31-1.jpg " width="200" height="200"></p>
+<a id="more"></a>
+<p></p><p align="center">有些往事，旧故很长</p><br><img src="/images/diary-2017-3-31-2.jpg " width="200" height="200"><p></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;网址:&lt;a href=&quot;http://dmego.cn&quot;&gt;http://dmego.cn&lt;/a&gt;&lt;/p&gt;
-
+      &lt;p&gt;&lt;img src=&quot;/images/diary-2017-3-31-1.jpg &quot; width=&quot;200&quot; height=&quot;200&quot; /&gt;&lt;/p&gt;
     
     </summary>
     
+      <category term="旧" scheme="http://dmego.cn/categories/%E6%97%A7/"/>
+    
+    
+      <category term="小情" scheme="http://dmego.cn/tags/%E5%B0%8F%E6%83%85/"/>
     
   </entry>
   
