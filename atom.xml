@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://dmego.cn/"/>
-  <updated>2017-06-03T09:06:24.436Z</updated>
+  <updated>2017-06-10T15:49:37.677Z</updated>
   <id>http://dmego.cn/</id>
   
   <author>
@@ -16,11 +16,43 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>远和近</title>
+    <link href="http://dmego.cn/2017/06/10/%E8%BF%9C%E5%92%8C%E8%BF%91/"/>
+    <id>http://dmego.cn/2017/06/10/远和近/</id>
+    <published>2017-06-10T15:00:00.000Z</published>
+    <updated>2017-06-10T15:49:37.677Z</updated>
+    
+    <content type="html"><![CDATA[<ul>
+<li>作者：顾城<br><img src="/images/yuanhejin.jpg" width="450px"><blockquote>
+<p>你<br>一会看我<br>一会看云<br>我觉得</p>
+<a id="more"></a>
+<p>你看我时很远<br>你看云时很近</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ul&gt;
+&lt;li&gt;作者：顾城&lt;br&gt;&lt;img src=&quot;/images/yuanhejin.jpg&quot; width=&quot;450px&quot; /&gt;&lt;blockquote&gt;
+&lt;p&gt;你&lt;br&gt;一会看我&lt;br&gt;一会看云&lt;br&gt;我觉得&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="病" scheme="http://dmego.cn/categories/%E7%97%85/"/>
+    
+    
+      <category term="幻觉" scheme="http://dmego.cn/tags/%E5%B9%BB%E8%A7%89/"/>
+    
+  </entry>
+  
+  <entry>
     <title>自杀者之歌</title>
     <link href="http://dmego.cn/2017/06/01/%E8%87%AA%E6%9D%80%E8%80%85%E4%B9%8B%E6%AD%8C/"/>
     <id>http://dmego.cn/2017/06/01/自杀者之歌/</id>
     <published>2017-05-31T20:30:00.000Z</published>
-    <updated>2017-06-03T09:06:24.436Z</updated>
+    <updated>2017-06-10T15:20:08.683Z</updated>
     
     <content type="html"><![CDATA[<ul>
 <li>作者：海子</li>
