@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://dmego.me/README.html</loc>
+    
+    <lastmod>2017-08-21T08:40:49.284Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://dmego.me/about/index.html</loc>
     
     <lastmod>2017-06-19T14:33:38.187Z</lastmod>
@@ -40,13 +47,6 @@
     <loc>http://dmego.me/2017/06/14/%E7%AC%AC%E4%B8%89%E4%B8%AA%E5%B7%B7%E5%8F%A3/</loc>
     
     <lastmod>2017-06-13T18:49:46.837Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://dmego.me/README.html</loc>
-    
-    <lastmod>2017-06-13T18:30:10.674Z</lastmod>
     
   </url>
   
