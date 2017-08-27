@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://dmego.me/"/>
-  <updated>2017-08-26T20:07:32.555Z</updated>
+  <updated>2017-08-27T08:30:42.320Z</updated>
   <id>http://dmego.me/</id>
   
   <author>
@@ -16,11 +16,30 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>我的一生</title>
+    <link href="http://dmego.me/2017/08/27/%E6%88%91%E7%9A%84%E4%B8%80%E7%94%9F/"/>
+    <id>http://dmego.me/2017/08/27/我的一生/</id>
+    <published>2017-08-27T08:27:36.000Z</published>
+    <updated>2017-08-27T08:30:42.320Z</updated>
+    
+    <content type="html"><![CDATA[<p>我的一生<br><a id="more"></a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;我的一生&lt;br&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Git学习笔记</title>
     <link href="http://dmego.me/2017/08/27/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     <id>http://dmego.me/2017/08/27/Git学习笔记/</id>
     <published>2017-08-26T17:00:23.958Z</published>
-    <updated>2017-08-26T20:07:32.555Z</updated>
+    <updated>2017-08-27T07:31:35.268Z</updated>
     
     <content type="html"><![CDATA[<p><img src="http://ovas9vc9a.bkt.clouddn.com/2017-08-27_035118.jpg" alt="img"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>

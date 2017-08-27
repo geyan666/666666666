@@ -11,6 +11,33 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
 
 
 <meta http-equiv="Cache-Control" content="no-transform" />
@@ -124,7 +151,7 @@
 <meta property="og:image" content="http://ovas9vc9a.bkt.clouddn.com/ccd6447e-dfe5-4bad-a37f-a9c087187ee2.png">
 <meta property="og:image" content="http://ovas9vc9a.bkt.clouddn.com/c69682ce-7885-4f36-82ae-abfd42deec28.png">
 <meta property="og:image" content="http://ovas9vc9a.bkt.clouddn.com/m.jpg">
-<meta property="og:updated_time" content="2017-08-26T20:07:32.555Z">
+<meta property="og:updated_time" content="2017-08-27T07:31:35.268Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git学习笔记">
 <meta name="twitter:description" content="前言 本文档笔记是本人通过学习廖雪峰Git教程的整理而来  本文档主要记录本人当时在学习过程中认为重要的概念和命令   创建一个版本库123mkdir learngit //使用命令创建一个目录cd learngit //进入这个目录pwd //用于显示当前目录">
@@ -165,6 +192,19 @@
   <title> Git学习笔记 | Dmego的博客 </title>
 </head>
 
+    <script type="text/javascript" src="/live2d/script.js"></script>
+    <canvas id="live2dcanvas" width="150" height="300" class="live2d"></canvas>
+    <style>
+      #live2dcanvas {
+        position: fixed;
+        right: 0px;
+        z-index: 999;
+        pointer-events: none;
+        bottom: -20px;
+      }
+    </style>
+    <script>loadlive2d("live2dcanvas" ,"/live2d/assets/z16/z16.model.json")</script>
+  
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
@@ -613,6 +653,44 @@
 </div>
       
     </div>
+	
+	<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+  <p><span>本文标题:</span><a href="/2017/08/27/Git学习笔记/">Git学习笔记</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 木青子日 的个人博客">木青子日</a></p>
+  <p><span>发布时间:</span>2017年08月27日 - 01:08</p>
+  <p><span>最后更新:</span>2017年08月27日 - 15:08</p>
+  <p><span>原始链接:</span><a href="/2017/08/27/Git学习笔记/" title="Git学习笔记">http://dmego.me/2017/08/27/Git学习笔记/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://dmego.me/2017/08/27/Git学习笔记/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    clipboard.on('success', $(function(){
+      $(".fa-clipboard").click(function(){
+        swal({   
+          title: "",   
+          text: '复制成功',   
+          html: false,
+          timer: 500,   
+          showConfirmButton: false
+        });
+      });
+    }));  
+</script>
+
+      
+	</div>
+
 
     <div>
       
@@ -653,6 +731,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/27/我的一生/" rel="prev" title="我的一生">
+                我的一生 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -704,6 +786,8 @@
           
   <div class="comments" id="comments">
     
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDQ3NC83MDI4"></div>
+    
   </div>
 
 
@@ -754,7 +838,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -919,20 +1003,12 @@
   &copy;  2016 - 
   <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
-    <i class="fa fa-heart"></i>
+    <i class="fa fa-heartbeat "></i>
   </span>
   <span class="author" itemprop="copyrightHolder">木青子日</span>
 </div>
 
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-
-
-<div class="powered-by">
-<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
-  本站访客数:<span id="busuanzi_value_site_uv"></span>
-</span>
-</div>
 
 <div class="powered-by">
   由 <a class="theme-link" href="https://hexo.io" rel="external nofollow">Hexo</a> 强力驱动
@@ -944,6 +1020,16 @@
     NextOne
   </a>
 </div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">
+	博客全站共&nbsp;
+	<a class="theme-link">4.7k</a>
+	&nbsp;字
+ </span>
+</div>
+
 
 
 
@@ -1079,6 +1165,19 @@
 
 
 
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
 
   
   
