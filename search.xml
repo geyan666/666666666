@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title><![CDATA[Git学习笔记]]></title>
-    <url>%2F2017%2F08%2F27%2Fcj7exjg8t000i6wky6lxs1bd3.html</url>
+    <url>%2F2017%2F08%2F27%2Flearn-git.html</url>
     <content type="text"><![CDATA[前言 本文档笔记是本人通过学习廖雪峰Git教程的整理而来 本文档主要记录本人当时在学习过程中认为重要的概念和命令 创建一个版本库123mkdir learngit //使用命令创建一个目录cd learngit //进入这个目录pwd //用于显示当前目录 初始化仓库1git init 添加文件到仓库12第一步：git add &lt;file&gt;第二步：git commit -m &apos;本次提交的说明&apos; 12git status:查看当前Git仓库的状态，是否有文件没有提交，让我们掌握仓库最新的状态git diff: 查看不同，当修改文件后，可以查看修改了什么内容（只适用于文本文件） 实现版本之间回退12git log:显示从最近到最远的提交日志git log --pretty=oneline:如果信息太多，使用这行命令 在Git中，用HEAD表示当前版本,上一个版本就是HEAD^，上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。 一大串类似882e1e0...67hko896的是commit id 版本号 git reset --hard HEAD^: 回退到上一个版本此时，当再次使用git log命令时，发现之前的版本已经消失了，此时想要再次回到那个版本，有两种方式：一种是当命令窗口没有关闭时，找到那个版本的版本号，如：81ac3c5，此时又回到最新的那个版本的命令是： 1git reset --hard 81ac3c5 如果已经过去很久了，已经记不得想要回退的版本的ID号，此时可以依据这个命令来找回版本号：1git reflog 工作区与暂存区的概念 工作区（Working Directory）：就是能在电脑上看到的目录，比如仓库文件夹 版本库（Repository）：工作区里有一个隐藏目录.git ，这个不算工作区，而是git的版本库前面我们讲了往Git版本库里添加文件的时候，分两步，这两步更详细的说是： 第一步使用git add 把文件添加进去，实际上就是把文件修改添加到暂存区； 第二步使用git commit提交修改，实际上是把暂存区的所有内容提交到当前分支因为我们创建Git版本库的时候，Git自动为我们创建了唯一的一个master 分支，而git commit就是往 master分支上提交更改。也可以简单理解为需要提交的文件修改通通放到了暂存区，等到要提交的时候，一次性提交暂存区里所有的文件到分支。 注意点： git diff 是工作区与暂存区的对比git diff -- cached 是暂存区与分支的对比git diff HEAD -- &lt;file&gt; 是工作区与分支的对比 撤销修改在以下三种情况下可以撤销修改： 修改了文件，没有添加到暂存区（修改了工作区）git checkout -- &lt;file&gt; 修改文件后添加到了暂存区，但是没有提交到分支（修改了暂存区）git reset HEAD &lt;file&gt; //把暂存区的修改回退到工作区git checkout -- &lt;file&gt;//把工作区的修改撤销 已经提交到了本地仓库分支，没有同步到远程仓库（版本回退即可）git reset --hard HEAD^ 删除文件以及恢复文件当我们使用 rm 命令或者直接在图形界面删除文件后，只是修改了工作区，若先使用 git rm &lt;file&gt; 命令删除文件，此时不仅修改了工作区，还修改了暂存区，此时使用撤销修改的命令还能找回被删除的文件。当删除操作被提交到分支后，只能使用版本回退操作来找回删除的文件。 注：git rm &lt;file&gt; 命令相当于先执行了rm命令 ，然后把工作区的修改添加到了暂存区，也就是说使用git rm &lt;file&gt;命令后不仅工作区的文件被删除了，也把删除操作添加到了暂存区。这就告诉我们，要想快速删除文件并提交到分支，只需执行git rm &lt;file&gt; 命令后commit就行了，如果想要更加谨慎，可以先使用rm 命令删除工作区中的文件，此时若想要撤销删除可以使用git checkout -- &lt;file&gt; 命令；如果想要添加修改操作到暂存区，使用git rm &lt;file&gt; 命令，到了这一步如果想要撤销删除可以先使用git reset HEAD &lt;file&gt; 命令撤销对暂存区的修改，然后使用 git checkout -- &lt;file&gt;命令来撤销对工作区的修改；如果已经把修改操作提交到了分支，此时想要撤销删除，找回文件则只能使用版本回退操作，即使用git reset --hard HEAD^命令。 添加远程库，并保持同步 当我们的系统之前从未使用SSH进行加密传输操作时，我们应该首先在用户主目录下创建SSH Key，因为你的本地Git 仓库和GitHub 仓库之间的传输是通过SSH 加密的。 在Github 上创建一个和本地仓库同名的仓库，要让本地仓库与该远程仓库关联可以使用命令： 1git remote add origin git@server-name:path/repo-name.git 关联后，使用命令git push -u origin master第一次推送master 分支的所有内容例如： 此后，每次本地提交后，要想实现远程仓库的同步，只需使用命令git push origin master推送最新的修改 从远程仓库克隆在合适的目录下使用命令1git clone git@server-name:path/repo-name.git 例如: 创建与合并分支 创建一个名为dev的分支 1git branch dev 切换到dev分支 1git checkout dev 以上两步可以用一条下面的命令完成 1git checkout -b dev //加上-b 参数表示创建并切 查看分支情况 1git branch //这个命令会列出所有的分支，并且在当前分支上会标注星号* 把dev分支的工作合并分支master上 1git checkout master //首先切换到master分支git merge dev //合并指定分支（dev）到当前分支（master） 删除分支 1git branch -d dev //删除分支 dev 分支合并时冲突解决当我们在两个分支上对同一个文件进行修改，并且修改的内容不一样，此时合并这两个分支时就会产生冲突此时查看该修改的文件时，就会发现Git用&lt;&lt;&lt;&lt;&lt;&lt;&lt;，=======，&gt;&gt;&gt;&gt;&gt;&gt;&gt;标记出不同分支的内容，此时我们需要手动修改文件，删除Git的标记，然后将修改后的文件先添加到暂存区，然后提交到分支提交成功后使用命令：git log --graph --pretty=oneline --abbrev-commit可以看到分支合并图 分支管理策略通常，合并分支的时候，Git会使用Fast forward模式，当是在这种模式下删除分支后就会丢掉分支的信息，如果我们想要在删除分支后还想在分支历史上看到分支的信息就可以强制禁用Fast forward 模式，此时Git 会在合并分支时生成一个新的commit：强制禁用Fast forward 模式的命令：1git merge --no-ff -m &apos;merge with no-ff&apos; dev //因为本次合并会生成一个commit ，所以需要加上 -m 参数说明 保存现场，修复bug后恢复我们在开发过程中需要经常修复软件中发现的bug，在git中我们就可以通过创建一个临时的分支来修复bug，修复bug后合并分支，然后删除临时分支但是如果我们在dev分支上的内容还没提交怎么办，此时我们可以使用命令来保存现场：1git stash 此时再查看Git库的状态就是干净的。当我们在master分支上通过创建临时分支修复bug后，再checkout 回dev分支时，我们有两条命令都可以恢复修复bug之前dev分支的状态：12（1）git stash apply // 恢复工作现场，但是不删除现场，就是说以后还可以恢复到该状态（2）git stash pop // 恢复工作现场后删除stash的内容 我们可以使用命令git stash list 来查看有多少现场被保存了，我们也可以多次使用stash，恢复的时候，通过 list后查看stash 的值， 然后通过恢复现场的命令来选择回到具体哪一个现场，如：12(1) git stash apply stash@&#123;1&#125; //恢复到 stash@&#123;1&#125; 后不删除该现场(2) git stash pop stash@&#123;0&#125; //恢复到 stash@&#123;0&#125; 后删除该现场 强行删除没有完全合并的分支当我们要添加一个新功能时我们会新建一个分支来进行添加，等到要合并新功能的分支到主分支时，接到通知说该新功能不需要了，此时如果我们删除该新功能分支会提示我们该新功能分支没有完全合并，如果确认要删除它，执行：git branch -D &lt;分支名称&gt;使用这个命令就可以删除未合并的分支，其实就是将小写 d 换成大写D 多人协作开发我们一般在开发中都是多人协作开发项目的,当你clone你的另一名小伙伴的项目库到你电脑上后，默认你只能看到该项目的本地master分支，你如果想要在dev分支上开发，就必须创建远程origin的dev分支到本地来，使用的命令是：1git checkout -b dev origin/dev 这样你就可以继续在dev上修改，修改完之后还可以 push dev分支到远程库，但是如果你的小伙伴也push了一次到远程库，并且此时你和你的小伙伴都对同样的文件进行了修改，你现在试图推送该分支到远程库，结果出现推送失败，因为你的提交与你小伙伴的最新提交之间有冲突。此时根据提示我们先用git pull把最新的提交从 origin/dev抓取下来，然后在本地合并解决冲突后然后提交分支并且推送dev到远程库。有的时候，我们git pull也会失败，原因是因为没有指定本地 dev 分支与远程origin/dev 分支的链接。我们根据提示，设置链接 设置的命令如提示:1git branch --set-upstream-to=origin/dev 此时就可以git pull 了，但是在本地合并时还会有冲突，此时我们通过手动解决冲突后然后推送到远程库。小结： 查看远程库的信息，使用命令git remote -v 本地新建的分支如果不推送到远程对其他人是不可见的 在本地创建和远程分支对应的分支使用git checkout -b branch-name origin/branch-name 本地和远程分支的名称最好一致 创建和操作标签为了更加方便的操作不同的版本，使用commit号（如：fs3k1hgk）是非常不方便的，如果使用版本号如v 1.2等标号就能很快的确认一个版本.标签：tag就是一个让人容易记住的有意义的名字，它跟某一个commit 绑在一起。它可以类似的理解为 IP 与域名的关系. 使用如下命令用于新建一个标签，默认为HEAD，也可以指定一个commit id1234git tag &lt;tagname&gt; 如：git tag v1.0git tag &lt;tagname&gt; &lt;commit id&gt; 如：git tag v1.0 ew326gd | git tag v 1.0 HEAD@&#123;1&#125; 注: 标签不是按时间顺序列出，而是按字母排序的。可以用git show &lt;tagname&gt;查看标签信息 删除一个本地标签git tag -d &lt;tagname&gt; 推送一个本地标签到远程库git push origin &lt;tagname&gt; 推送全部未推送到远程库的标签到远程库git push origin --tags 删除一个已经推送到远程库的标签12git tag -d &lt;tagname&gt; //先删除本地标签git push origin:refs/tags/&lt;tagname&gt; // 再删除远程标签 一个本地库关联多个远程库由于git本身是分布式版本控制系统，可以同步多个不同的远程库。例如可以同时同步到GitHUb和码云，但是我们在使用多个远程库时要注意，因为git给远程库起的默认名称是origin，如果有多个远程库，我们就需要使用不同的名称来标识不同的远程库。一般关联多个远程库分为下面几个步骤： 如果之前关联过一个远程库，且远程库的名称是默认的origin，此时你可以继续保留这个库或者先删除这个库，然后再关联并且起一个更加有辨识度的名称 1git remote rm origin //删除已经关联的名为origin 的远程库 接着再关联如GitHub上的远程库，并将远程库的名称叫做 GitHub,不使用默认的名称 1git remote add github git@github.com:dmego/learngit.git 然后再关联一个远程仓库，如码云上的远程库，并将远程库的名称叫做gitee 1git remote add gitee git@gitee.com:dmocgo/learngit.git 现在，我们用git remote -v查看远程库信息，可以看到两个远程库： 12345git remote -vgitee git@gitee.com:dmocgo/learngit.git (fetch)gitee git@gitee.com:dmocgo/learngit.git (push)github git@github.com:dmego/learngit.git (fetch)github git@github.com:dmego/learngit.git (push) 如果要推送到GitHub，使用命令： 1git push github master 如果要推送到码云，使用命令： 1git push gitee master 这样一来，我们的本地库就可以同时与多个远程库同步 自定义Git 让Git命令显示颜色，输出更加醒目： 1git config --global color.ui true 忽略特殊的文件，其中忽略文件的原则是： 忽略操作系统自动生成的文件，如缩略图忽略编译生成的中间文件，可执行文件，也就是说一个文件时通过其他文件自动生成的就没有必要放进版本库了，例如java编译产生的.class 文件忽略带有敏感信息的配置文件，比如保存了数据库密码的配置文件 我们在Git工作区的根目录下创建一个特殊的 .gitignore文件，然后把要忽略的文件名写进去，Git就会每次在提交的时候自动忽略这些文件，我们不需要从头写一个.gitignore文件，GitHub已经为我们准备了各种配置文件，所有的配置文件都可以在线浏览：https://github.com/github/gitignore。 有的时候，你想添加一个文件到git ，但是却发现添加不了，原因可能是这个文件被忽略了，如果想强制添加可以使用命令：1git add -f &lt;filename&gt; 还有的时候发现可能是 .gitignore文件写错了，需要找出来到底哪个规则写错了，可以使用命令检查：1git check-ignore -v &lt;filename&gt; 配置别名，简化命令。有时候命令太长或者单词不好记就可以使用Git来配置别名来达到高效的目的，例如将命令git status简化为git st:1git config --global alias.st status 注意：--global 参数是全局参数，也就是这些命令在这台电脑的所有Git 仓库下都可以使用（是针对当前用户起作用），如果不加这个参数，就只能对当前仓库起作用。每个仓库的配置文件都放在.git/config 文件中，其中别名就在 [alias] 后面，要想删除别名直接把对应的那行删除就行了而每个用户的配置文件放在用户主目录下的一个隐藏文件.gitconfig中。其中别名就在 [alias]后面，要想删除别名直接把对应的那行删除就行了。 搭建Git服务器教程地址：廖雪峰GIt教程]]></content>
       <categories>
         <category>Git</category>
@@ -13,7 +13,7 @@
   </entry>
   <entry>
     <title><![CDATA[七里香]]></title>
-    <url>%2F2017%2F08%2F24%2Fcj7exjg7j00016wkynfkh4g5v.html</url>
+    <url>%2F2017%2F08%2F24%2Fdaphne-odera.html</url>
     <content type="text"><![CDATA[席慕蓉 溪水急着要流向海洋浪潮却渴望重回土地在绿树白花的篱前曾那样轻易地挥手道别而沧桑的二十年后我们的魂魄却夜夜归来微风拂过时便化作满园的郁香]]></content>
       <categories>
         <category>情</category>
@@ -24,7 +24,7 @@
   </entry>
   <entry>
     <title><![CDATA[第三个巷口]]></title>
-    <url>%2F2017%2F06%2F14%2Fcj7exjg8500076wkyliyewz88.html</url>
+    <url>%2F2017%2F06%2F14%2Fthird-lane.html</url>
     <content type="text"><![CDATA[木青子日 我住的那条街道上有一个流浪的南方姑娘她喜欢云的白天她喜欢星的黑夜在北方的第六百五十六个晚上雨落在第三个巷口的地方南方姑娘啊她悄然离开了这座城市回到了桃花十里的故乡]]></content>
       <categories>
         <category>情</category>
@@ -35,7 +35,7 @@
   </entry>
   <entry>
     <title><![CDATA[远和近]]></title>
-    <url>%2F2017%2F06%2F10%2Fcj7exjg8e000b6wkymu816pdz.html</url>
+    <url>%2F2017%2F06%2F10%2Ffar-and-near.html</url>
     <content type="text"><![CDATA[作者：顾城 ​ 你一会看我，一会看云 我觉得你看我时很远你看云时很近]]></content>
       <categories>
         <category>病</category>
@@ -46,7 +46,7 @@
   </entry>
   <entry>
     <title><![CDATA[自杀者之歌]]></title>
-    <url>%2F2017%2F06%2F01%2Fcj7exjg8c00096wkykps8t1q1.html</url>
+    <url>%2F2017%2F06%2F01%2Fsong-of-suicide.html</url>
     <content type="text"><![CDATA[作者：海子伏在下午的水中窗帘一掀掀一两根树枝伸过来肉体，水面的宝石是对半分裂的瓶子瓶里的水不能分裂 伏在一具斧子上像伏在一具琴上还有绳索盘在床底下林间的太阳砍断你像砍断南风你把枪打开，独自走回故乡像一只鸽子倒在猩红的篮子上]]></content>
       <categories>
         <category>病</category>
@@ -57,7 +57,7 @@
   </entry>
   <entry>
     <title><![CDATA[有些冷暖]]></title>
-    <url>%2F2017%2F04%2F18%2Fcj7exjg8l000g6wkycpymw5rw.html</url>
+    <url>%2F2017%2F04%2F18%2Fsome-cold-and-warm.html</url>
     <content type="text"><![CDATA[已经连续好几个星期没有好好睡一觉了也许是因为最近的事儿多没日没夜的忙起来，就忘记了许多闲常人间的，四月天，天空蓝了许多街头的柳絮，给人带来的不是诗情画意反而弥漫着一股糟糕的情绪好像每个人身上带着无数的刺有些偏距，但是却不像电影情节那样结局并不用看导演的心情跑龙套的小丑说他也会像男主角一样出名也许在某一天，也许在某一年好久没有见过那只橘黄色的肥猫了有人说是因为太胖走不动了也有人说是你行色太匆匆了]]></content>
       <categories>
         <category>语</category>
@@ -68,7 +68,7 @@
   </entry>
   <entry>
     <title><![CDATA[也许]]></title>
-    <url>%2F2016%2F11%2F20%2Fcj7exjg7v00036wky3kbntww0.html</url>
+    <url>%2F2016%2F11%2F20%2Fperhaps.html</url>
     <content type="text"><![CDATA[舒婷 也许我们的心总是没有读者也许路开始已错结果还是错也许我们点起一个个灯笼又被大风一个个吹灭也许燃尽生命烛照黑暗身边却没有取暖之火也许泪水流尽土地更加肥沃也许我们歌唱太阳也被太阳歌唱着也许肩上越是沉重信念越是巍峨也许为一切苦难疾呼对个人的不幸只好沉默也许由于不可抗拒的召唤我们没有其它选择]]></content>
       <categories>
         <category>杂</category>
