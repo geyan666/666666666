@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://dmego.me/tags/index.html</loc>
+    
+    <lastmod>2017-10-06T18:31:48.640Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://dmego.me/links/index.html</loc>
+    
+    <lastmod>2017-10-06T18:31:42.480Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://dmego.me/categories/index.html</loc>
+    
+    <lastmod>2017-10-06T18:31:32.708Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://dmego.me/archives/index.html</loc>
+    
+    <lastmod>2017-10-06T18:31:27.470Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://dmego.me/about/index.html</loc>
+    
+    <lastmod>2017-10-06T18:31:18.939Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://dmego.me/2016/10/16/hanoi.html</loc>
     
     <lastmod>2017-09-30T11:54:49.453Z</lastmod>
@@ -37,23 +72,9 @@
   </url>
   
   <url>
-    <loc>http://dmego.me/links/index.html</loc>
-    
-    <lastmod>2017-08-28T05:40:09.315Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://dmego.me/404.html</loc>
     
     <lastmod>2017-08-27T11:28:44.179Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://dmego.me/about/index.html</loc>
-    
-    <lastmod>2017-06-19T14:33:38.187Z</lastmod>
     
   </url>
   
@@ -89,27 +110,6 @@
     <loc>http://dmego.me/2017/06/14/third-lane.html</loc>
     
     <lastmod>2017-06-13T18:49:46.837Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://dmego.me/tags/index.html</loc>
-    
-    <lastmod>2017-03-30T16:27:49.984Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://dmego.me/categories/index.html</loc>
-    
-    <lastmod>2017-03-30T16:27:32.739Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://dmego.me/archives/index.html</loc>
-    
-    <lastmod>2017-03-30T16:27:15.306Z</lastmod>
     
   </url>
   
