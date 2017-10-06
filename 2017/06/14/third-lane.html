@@ -553,27 +553,6 @@
     <div>
       
         
-  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-    <div>🐶 随性而赏 🐶</div>
-    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-      <span>赞赏</span>
-    </button>
-    <div id="QR" style="display: none;">
-      
-        <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/images/wechat-reward-img.jpg" alt="木青子日 WeChat Pay"/>
-          <p>微信打赏</p>
-        </div>
-      
-      
-        <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="/images/alipay-reward-img.jpg" alt="木青子日 Alipay"/>
-          <p>支付宝打赏</p>
-        </div>
-      
-    </div>
-  </div>
-
 
       
     </div>
@@ -649,7 +628,7 @@
           
   <div class="comments" id="comments">
     
-      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMDQ3NC83MDI4"></div>
+      <div id="gitalk-container"></div>
     
   </div>
 
@@ -1005,17 +984,29 @@
 
 
   
-    <script type="text/javascript">
-      (function(d, s) {
-        var j, e = d.getElementsByTagName(s)[0];
-        if (typeof LivereTower === 'function') { return; }
-        j = d.createElement(s);
-        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-        j.async = true;
-        e.parentNode.insertBefore(j, e);
-      })(document, 'script');
-    </script>
-  
+
+
+   
+   
+   
+   
+   
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '130d8c9cb4317b5c4748',
+          clientSecret: '29d36e22135c370b6282b705f495827da1982f27',
+          repo: 'dmego.github.io',
+          owner: 'dmago',
+          admin: ['dmego'],
+          id: window.location.pathname,
+		  		distractionFreeMode: true
+        })
+        gitalk.render('gitalk-container')
+       </script>
+
+
 
   
   

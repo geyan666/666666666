@@ -749,17 +749,29 @@
 
 
   
-    <script type="text/javascript">
-      (function(d, s) {
-        var j, e = d.getElementsByTagName(s)[0];
-        if (typeof LivereTower === 'function') { return; }
-        j = d.createElement(s);
-        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-        j.async = true;
-        e.parentNode.insertBefore(j, e);
-      })(document, 'script');
-    </script>
-  
+
+
+   
+   
+   
+   
+   
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: '130d8c9cb4317b5c4748',
+          clientSecret: '29d36e22135c370b6282b705f495827da1982f27',
+          repo: 'dmego.github.io',
+          owner: 'dmago',
+          admin: ['dmego'],
+          id: window.location.pathname,
+		  		distractionFreeMode: true
+        })
+        gitalk.render('gitalk-container')
+       </script>
+
+
 
   
   
