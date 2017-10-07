@@ -24,6 +24,6 @@
 - ```Notepad++``` 一款开源的编辑器，十分好用
 
 ### 效果图
-![mark](https://files.cnblogs.com/files/dmego/111.gif)
+![mark](http://ovasw3yf9.bkt.clouddn.com/blog/171008/cJh7g9fHBg.gif)
 ### 注
 - 访问地址：[个人博客](http://dmego.me/)
