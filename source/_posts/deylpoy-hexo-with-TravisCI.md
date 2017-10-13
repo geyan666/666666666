@@ -11,6 +11,7 @@ copyright: true
 使用 `hexo + gitPages` 搭建个人博客的人都知道，每当要发表一篇博文，第一步得手动使用 `hexo g` 命令生成静态网页，然后还得通过 `hexo d` 命令将静态文件推送到GitHub远程仓库,不说麻烦不麻烦，更重要的是有时候环境换了，没有搭建 hexo 环境，想发篇博客的时候就没有可能了。而现在通过 Travis CI 就能自动构建自己的博客。而我们只需将写好的 `Markdown` 格式的博文`push` 到 源文件 分支即可。
 ## Travis CI 介绍
 [Travis CI](https://travis-ci.org/) 是目前新兴的开源持续集成构建项目，它与 jenkins，GO的很明显的特别在于采用 yaml 格式，简洁清新独树一帜。目前大多数的 github 项目都已经移入到 Travis CI 的构建队列中，据说 Travis CI 每天运行超过 4000 次完整构建。
+  <!--more-->
 ## hexo 介绍
 [Hexo](https://hexo.io/) 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。
 ## 使用 Travis 自动构建
