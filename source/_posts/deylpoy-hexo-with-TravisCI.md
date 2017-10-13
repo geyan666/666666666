@@ -8,7 +8,7 @@ tags: [hexo,Travis CI,自动部署]
 copyright: true
 ---
 ## 前言
-使用 `hexo + gitPages` 搭建个人博客的人都知道，每当要发表一篇博文，第一步得手动使用 `hexo g` 命令生成静态网页，然后还得通过 `hexo d` 命令将静态文件推送到GitHub远程仓库,不说麻烦不麻烦，更重要的是有时候环境换了，没有搭建 hexo 环境，想发篇博客的时候就没有可能了。而现在通过 Travis CI 就能自动构建自己的博客。而我们只需将写好的 `Markdown` 格式的博文`push` 到 源文件 分支即可。
+使用 `hexo + gitPages` 搭建个人博客的人都知道，每当要发表一篇博文，第一步得手动使用 `hexo g` 命令生成静态网页，然后还得通过 `hexo d` 命令将静态文件推送到GitHub远程仓库,不说麻烦不麻烦，更重要的是有时候环境换了，没有搭建 hexo 环境，想发篇博客的时候就没有可能了。而现在通过 Travis CI 就能自动构建自己的博客。我们只需将写好的 `Markdown` 格式的博文`push` 到 hexo源文件 分支即可。
 ## Travis CI 介绍
 [Travis CI](https://travis-ci.org/) 是目前新兴的开源持续集成构建项目，它与 jenkins，GO的很明显的特别在于采用 yaml 格式，简洁清新独树一帜。目前大多数的 github 项目都已经移入到 Travis CI 的构建队列中，据说 Travis CI 每天运行超过 4000 次完整构建。
   <!--more-->
@@ -48,7 +48,6 @@ node_js: stable
 install:
   - npm install
 
-
 #before_script:
  # - npm install -g gulp
 
@@ -58,8 +57,8 @@ script:
 after_script:
   - cd ./public
   - git init
-  - git config user.name "GitHub账户名称"
-  - git config user.email "github账户邮箱"
+  - git config user.name "dmego" --{GitHub账户名称}
+  - git config user.email "zengkai12138@outlook.com" --{Github账户邮箱}
   - git add .
   - git commit -m "Update docs"
   - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:master
@@ -67,14 +66,18 @@ after_script:
 
 branches:
   only:
-    - Hexo源码分支名称
+    - hexo --{Hexo源码分支名称}
 env:
  global:
-   - GH_REF: github.com/dmego/dmego.github.io.git(仓库地址)
+   - GH_REF: github.com/dmego/dmego.github.io.git --{仓库地址}
 ```
 配置到这一步就已经把所有配置全部完成，下面就是验证的过程
 
-## 构建自动部署结果
+## 构建并自动部署结果
 将某篇文章中的一个表格增加一行后将修改推送到hexo源码所在的`hexo`分支
-,然后等Travis CI 构建并自动部署完成后，点击博文发现表格多了一行。这说明构建自动部署项目成功。
+,然后等Travis CI 构建并自动部署成功后。
+![mark](http://ovasw3yf9.bkt.clouddn.com/blog/171014/F83mk0a09k.png?imageslim)
+点击博文发现表格多了一行。
 ![mark](http://ovasw3yf9.bkt.clouddn.com/blog/171014/hk2hCAma3D.png?imageslim)
+## 总结
+这样做虽然能很好的实现自动部署的功能，但是有个问题也要注意，就是博客源码公开问题，如果对博客源码不介意的可以直接使用公开仓库，如果介意那就没有办法了，除非使用付费的私有仓库，或者把项目放在`Coding`上去，因为上有提供免费的私有仓库。就我个人认为，既然是自己的博客，本来就是要给人看的，博客源码也谈不上存在什么隐私。
