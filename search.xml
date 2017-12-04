@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[微信小程序：出发吧一起]]></title>
+    <url>%2F2017%2F12%2F04%2Fwechat-app-together.html</url>
+    <content type="text"><![CDATA[前言经过将近一个多月的开发,我们团队开发的微信小程序 “出发吧一起” 终于开发完成,现在的线上版本为 2.2.4-beta 版 本文档主要介绍该小程序在开发中所用到的技术,已经在开发中遇到问题的采取的解决方法 原文链接（转载请注明出处）：微信小程序：出发吧一起 开源地址 小程序简介“让兴趣不再孤单，让爱好不再流浪” 是微信小程序《出发吧一起》的主题，这款小程序旨在解决当代大学生在校园生活中的孤独感，让大家找到志同道合的朋友，在跑步、健身、竞赛等活动中找到伙伴。利用小程序即开即用，用完就走的特点与交友相结合，它将会是一款高效快捷、无负担的线下交友利器 本小程序由 bmob 后端云提供数据处理与存储支持 小程序码欢迎扫描体验 开发中技术问题汇总1.使用e.target.dataset的出现问题在小程序开发过程中,我们经常会用到标签中属性的属性值,我们通常会在 &lt;view&gt; 中 设置 data-*=&quot;&quot; 然后在 JS 里通过 e.target.dateset.* 来获取XXX值,但是我经常遇到获取的是undefined,使用 console.log(e) 查看输出信息会发现,在 e对象中包含两个对象分别是currentTarget和target,而往往有些时候数据在currentTarget中, 此时可以将代码替换成这样来获取值 WXML 1&lt;view bindtap="bintap" data-id="1"&gt;&lt;/view&gt; JS 123bintap:function(e)&#123; var id = e.currentTarget.dataset.id;&#125; 网上还有一直说法是 data-* 里 * 命名的问题,去掉驼峰式命名,纯小写也能解决 2.小程序 textarea 文本框如何显示实时字数 WXML 123456&lt;view&gt; &lt;view&gt; &lt;textarea name="content" bindinput="bindTextAreaChange" maxlength="&#123;&#123;noteMaxLen&#125;&#125;" /&gt; &lt;view class="chnumber"&gt;&#123;&#123;noteNowLen&#125;&#125;/&#123;&#123;noteMaxLen&#125;&#125;&lt;/view&gt; &lt;/view&gt;&lt;/view&gt; JS 12345678910111213141516data:&#123; noteMaxLen: 200,//备注最多字数 noteNowLen: 0,//备注当前字数&#125; //字数改变触发事件 bindTextAreaChange: function (e) &#123; var that = this var value = e.detail.value, len = parseInt(value.length); if (len &gt; that.data.noteMaxLen) return; that.setData(&#123; content: value, noteNowLen: len &#125;) &#125;, 3.利用 JS 实现模糊查询由于我们使用的是 Bmob 后端云提供的数据处理与存储支持，根据 Bmob 提供的开发文档，免费版的应用无法进行模糊查询，看到这里，再看看已经快完工的活动检索界面，感受无法言说。正当准备放弃的时候，突然想到一个方法，那就是先把所有的后台所有数据都存到集合里，然后根据输入的检索值一个个匹配，想到之后马上就开始着手干了，先查了一下javaScript 文档,String 对象有一个方法是 indexOf() ,可返回某个指定的字符串值在字符串中首次出现的位置,这样就成了,遍历 所以数据,检索每一条数据的每个字符,如果出现了则将它加入到检索结果的集合中. JS 12345678910111213141516171819202122232425//js 实现模糊匹配查询 findEach: function (e) &#123; var that = this var strFind = that.data.wxSearchData.value; //这里使用的 wxSearch 搜索UI插件, if (strFind == null || strFind == "") &#123; wx.showToast(&#123; title: '输入为空', icon: 'loading', &#125;) &#125; if (strFind != "") &#123; var nPos; var resultPost = []; for (var i in smoodList) &#123; var sTxt = smoodList[i].title || ''; //活动的标题 nPos = sTxt.indexOf(strFind); if (nPos &gt;= 0) &#123;//如果输入的关键字在该活动标题中出现过,则匹配该活动 resultPost.push(smoodList[i]); //将该活动加入到搜索到的活动列表中 &#125; &#125; that.setData(&#123; moodList: resultPost &#125;) &#125; &#125;, 更加详细的代码请前往Github查看 4.使用 JS 将字符串格式的时间转换成几秒前,几分钟前…由于小程序中涉及评论,加入活动,收藏等一系列包括事件时间的功能,而数据库中存的时间格式为 2017-11-30 23:36:10 现在想要在界面上不显示具体时间,而是显示与当前时间的差,即几秒前,几分钟前等等 实现起来并不复杂,主要思路是先把字符串的时间转换成时间戳,然后与当前的时间戳进行比较,这样就能转换成几秒前、几分钟前、几小时前、几天前等形式了 JS 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162//字符串转换为时间戳function getDateTimeStamp(dateStr) &#123; return Date.parse(dateStr.replace(/-/gi, "/"));&#125;//格式化时间function getDateDiff(dateStr) &#123; var publishTime = getDateTimeStamp(dateStr) / 1000, d_seconds, d_minutes, d_hours, d_days, timeNow = parseInt(new Date().getTime() / 1000), d, date = new Date(publishTime * 1000), Y = date.getFullYear(), M = date.getMonth() + 1, D = date.getDate(), H = date.getHours(), m = date.getMinutes(), s = date.getSeconds(); //小于10的在前面补0 if (M &lt; 10) &#123; M = '0' + M; &#125; if (D &lt; 10) &#123; D = '0' + D; &#125; if (H &lt; 10) &#123; H = '0' + H; &#125; if (m &lt; 10) &#123; m = '0' + m; &#125; if (s &lt; 10) &#123; s = '0' + s; &#125; d = timeNow - publishTime; d_days = parseInt(d / 86400); d_hours = parseInt(d / 3600); d_minutes = parseInt(d / 60); d_seconds = parseInt(d); if (d_days &gt; 0 &amp;&amp; d_days &lt; 3) &#123; return d_days + '天前'; &#125; else if (d_days &lt;= 0 &amp;&amp; d_hours &gt; 0) &#123; return d_hours + '小时前'; &#125; else if (d_hours &lt;= 0 &amp;&amp; d_minutes &gt; 0) &#123; return d_minutes + '分钟前'; &#125; else if (d_seconds &lt; 60) &#123; if (d_seconds &lt;= 0) &#123; return '刚刚'; &#125; else &#123; return d_seconds + '秒前'; &#125; &#125; else if (d_days &gt;= 3 &amp;&amp; d_days &lt; 30) &#123; return M + '-' + D + ' ' + H + ':' + m; &#125; else if (d_days &gt;= 30) &#123; return Y + '-' + M + '-' + D + ' ' + H + ':' + m; &#125;&#125; 5.微信小程序提交表单清空表单数据在发布活动之后,由于表单中的数据没有清空,给用户的体验必定不好,然而小程序的数据交互并不像html + jS 那样,使用 dataSet({}) 来给赋值,视图层就能通过异步的方式活动到值,于是想到,在提交表单后,给这些input都赋值为空,那样就实现了清空表单的效果,当然,表单中并不只包含input,但是都可以通过这种方式实现清空效果 WXML 12345&lt;form bindsubmit="submitForm"&gt; &lt;text class="key"&gt;活动名称&lt;/text&gt; &lt;input name="title" maxlength="100" value="&#123;&#123;title&#125;&#125;" /&gt; &lt;button formType="submit"&gt;确定&lt;/button&gt;&lt;/form&gt; JS 12345678910submitForm:function(e)&#123; var title = e.detail.value.title; ...... success: function (res) &#123; //将title值设置空 that.setData(&#123; title: '' &#125; &#125;&#125; 6.微信号,QQ号,手机号 正则校验由于申请加入活动需要填写真实姓名,联系方式等信息,为了防止用户随意填写信息,必须要对这些信息进行校验 JS 1234var wxReg = new RegExp("^[a-zA-Z]([-_a-zA-Z0-9]&#123;5,19&#125;)+$"); //微信号正则校验var qqReg = new RegExp("[1-9][0-9]&#123;4,&#125;"); //QQ号正则校验var phReg = /^1[34578]\d&#123;9&#125;$/; //手机号正则校验var nameReg = new RegExp("^[\u4e00-\u9fa5]&#123;2,4&#125;$"); //2-4位中文姓名正则校验 7.使用 Bmob SDK 实现报名成功发送模板消息,生成小程序二维码等在开发过程中,由于想要实现,当用户报名成功后如何通知用户,查阅了小程序的开发文档发现有一个发送模板消息的API,再查询 Bmob 的开发文档,发现实现了这个功能,这个真的太有用了.模板消息只能再真机上才能发送成功,经过配置,重要成功,但是有在使用中出现一个问题,就是在小程序发布后 模板消息中如果带有 page 参数将不会发送,但是在开发版中能发送成功, 这个问题已经反馈了,估计等Bmob小程序SDK更新后会解决这个问题. 具体代码我就不写了,bmob开发文档直达 发送模板消息 生成小程序二维码 截图 &amp; GIF Bmob 数据库表结构设计用户表:(_User，自带表)|--objectId //Id |--userPic(String) //用户头像 |--username(String) //用户名 |--password(String) //密码 |--nickname(String) //昵称 |--sex(Number) //性别 |--userData(Object) //微信登录用户数据 |--eventJoin(Array) //参加的活动Id 数组Array |--eventFavo(Array) //收藏的活动Id 数组Array |--feednum(Number) //反馈次数 活动信息表：(Events)|--objectId //活动Id |--publisher(Pointer--&gt;_User) //发起人 |--title(String) //活动主题 |--content(String) //活动内容 |--actpic(File) //活动宣传照片 |--acttype(String) //活动类别 { 1：运动,2：游戏,3：交友, 4：旅行,5：读书,6：竞赛, 7：电影,8: 音乐,9: 其他 } |--isShow(Number) //是否公开显示在首页 |--endtime(String) //组队截止时间 |--address(String) //活动地点 |--latitude(Number) //地址纬度 |--longitude(Number) //地址经度 |--peoplenum(String)//人数限制 |--likenum(Number) //点赞数 |--liker(Array) //点赞人Id集合 |--commentnum(Number) //评论数 |--joinnumber(Number) // 现在参加的人数 |--joinArray(Array) // 现在参加的人集合 活动信息扩展表:(EventMore)|--objectId //活动信息扩展表Id |--event(Pointer--&gt;Events) //活动 |--Status(Number) //活动状态,(1:准备中,2:进行中,3:已结束) |--Statusname(String) //活动状态名称 |--qrcode(File) //活动群聊二维码 评论表：(Comments)|--objectId //评论Id |--publisher(Pointer--&gt;_User) //评论发布者 |--olderUsername(String) //上一条评论人昵称 |--olderComment(Pointer--&gt;Comments) //上一条评论 |--event(Pointer--&gt;Events) //评论的活动 |--content(String) //评论内容 点赞表：(Likes)|--objectId //点赞的Id |--liker(Pointer--&gt;_User) //点赞人 |--event(Pointer--&gt;Events) //点赞的活动 收藏表:(Favos)|--objectId //收藏的Id |--favor(Pointer--&gt;_User) //收藏者 |--event(Pointer--&gt;Events) //收藏的活动 消息通知表:(Plyre)|--objectId //消息通知的Id |--fid(String) //活动发布者Id(被赞或者被取消赞的人的ID,或者被回复,被评论的人的ID)(被通知的人) |--uid(Pointer--&gt;_User) //消息通知人 |--wid (String) //被赞，或者取消赞，被评论，或者被回复，加入，取消加入的活动id |--avatar (String) //消息通知人的头像 |--username (String) //消息通知人的姓名 |--is_read(Number) //这条消息是否已读（1代表已读，0代表未读） |--bigtype(Number) //消息通知大类(1代表消息，2代表通知) |--behavior(Number) //(消息提醒类型) { 1：赞 2：取消赞 3：被评论 4：被回复 5：加入活动 6：取消加入活动 7：修改了加入信息 } 活动联系表:(Contact)|--objectId //联系表Id |--publisher(Pointer--&gt;_User) //活动发布者 |--currentUser (Pointer--&gt;_User) //当前用户 |--event(Pointer--&gt;Events) //想要加入的活动 |--realname (String) //真实姓名 |--contactWay(String) //联系方式(微信号,手机号,QQ号) |--contactValue(String) //联系方式的号码 反馈表:(Feedback)|--objectId //反馈Id |--feedUser(Pointer--&gt;_User) //反馈人Id |--title(String) //反馈标题 |--content(String) //反馈内容 |--feedpic(File) //反馈图片 |--feedinfo(String) //反馈用户的设备信息 感谢以下开源项目、网站社区 Bmob后端云 微信小程序联盟 WeUI for 小程序 有赞小程序 UI 库 微信小程序自定义组件（对话框、指示器、五星评分…） 微信小程序优雅的搜索框 We重邮 QQ 向左滑动删除操作 模仿QQ6.0侧滑菜单 守望轩 …..]]></content>
+      <categories>
+        <category>微信小程序</category>
+      </categories>
+      <tags>
+        <tag>JS</tag>
+        <tag>微信小程序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[一句人生--(待更新...)]]></title>
+    <url>%2F2017%2F11%2F12%2Fquotes-tagore-1.html</url>
+    <content type="text"><![CDATA[2017年11月12日 泰戈尔有一个夜晚我烧毁了所有的记忆从此我的梦就透明了 有一个早晨我扔掉了所有的昨天从此我的脚步就轻盈了 句子寻于豆瓣, 图片来源于Lofter]]></content>
+      <categories>
+        <category>杂</category>
+      </categories>
+      <tags>
+        <tag>一句人生</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[使用Travis CI自动部署Hexo到GitHub]]></title>
+    <url>%2F2017%2F10%2F13%2Fdeylpoy-hexo-with-TravisCI.html</url>
+    <content type="text"><![CDATA[前言使用 hexo + gitPages 搭建个人博客的人都知道，每当要发表一篇博文，第一步得手动使用 hexo g 命令生成静态网页，然后还得通过 hexo d 命令将静态文件推送到GitHub远程仓库,不说麻烦不麻烦，更重要的是有时候环境换了，没有搭建 hexo 环境，想发篇博客的时候就没有可能了。而现在通过 Travis CI 就能自动构建自己的博客。我们只需将写好的 Markdown 格式的博文push 到 hexo源文件 分支即可。 Travis CI 介绍Travis CI 是目前新兴的开源持续集成构建项目，它与 jenkins，GO的很明显的特别在于采用 yaml 格式，简洁清新独树一帜。目前大多数的 github 项目都已经移入到 Travis CI 的构建队列中，据说 Travis CI 每天运行超过 4000 次完整构建。 hexo 介绍Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 使用 Travis 自动构建我的博客自动部署思路是，将 hexo 源码 push 到博客 项目的另外一个分支，既一个分支放源码，一个分支放静态文件，使用 Travis CI 自动部署 hexo 源码的分支，构建完成后自动推送到 静态文件的分支上，而这一切都在一个仓库上进行操作。注意：如果使用的是GitPage的个人站点来搭建博客的 ，则博客静态文件在 master分支上；如果使用的是 gitPages 的项目站点来搭建博客，则博客的静态文件在 gh-pages 分支上。 在GitHub 上生成 Access Token如果想要 让travis CI 构建完成之后自动 push 到 master 分支，则travis需要有对这个仓库进行操作的权限，此时我们就需要为Travis CI 配置Access Token（访问令牌）。在GitHub上生成Access Token 的步骤是，点击头像进入设置（Settings）,r然后点击左边菜单栏最下面的Developer settings 选项，进入后点击左边的 Personal access tokens 选项，进入后点击右上角的Generate new token 按钮点击后就会来到下面的界面，先给 Token 起一个名字，然后为它设置一些权限，其中红框内的权限是必须的，其他可以随意添加。点击下面的 create token 按钮，就会生成一个已经赋予好权限的 token 值，接下来我们Travis CI 网站的配置中。 配置 Travis CI如果之前从未使用 Travis CI 来构建项目，则我们先需要使用GitHub账号来登录网站,登录进来后，会进到如下图界面，如果底下 没有把 GitHub 仓库中的项目加载进来，可以手动点击右上角的 Sync account 按钮，待到同步完成后将要自动构建的项目开启。开启后点击设置图标就可以进行一系列的设置，如下图所示，先开启 General 里的两项选项： Build only if .travis.yml is present:只有在.travis.yml文件中配置的分支改变了才构建 Build branch updates:当分支更新后开始构建 然后在 Environment Variables 一栏里将在 GitHub 下获取的的 Access Token 值添加进来 添加配置文件到Hexo源码分支下上面提到的 .travis.yml 配置文件需要添加到hexo 源码的根目录下，因为Travis CI 在自动构建时需要获取这些配置信息，以此来完成构建任务；这些配置信息主要包括源码分支，静态文件推送分支，仓库地址等信息。其中主要内容如下：1234567891011121314151617181920212223242526272829language: node_jsnode_js: stable# S: Build Lifecycleinstall: - npm install#before_script: # - npm install -g gulpscript: - hexo gafter_script: - cd ./public - git init - git config user.name &quot;dmego&quot; --&#123;GitHub账户名称&#125; - git config user.email &quot;zengkai12138@outlook.com&quot; --&#123;Github账户邮箱&#125; - git add . - git commit -m &quot;Update docs&quot; - git push --force --quiet &quot;https://$&#123;GH_TOKEN&#125;@$&#123;GH_REF&#125;&quot; master:master# E: Build LifeCyclebranches: only: - hexo --&#123;Hexo源码分支名称&#125;env: global: - GH_REF: github.com/dmego/dmego.github.io.git --&#123;仓库地址&#125; 配置到这一步就已经把所有配置全部完成，下面就是验证的过程 构建并自动部署结果将某篇文章中的一个表格增加一行后将修改推送到hexo源码所在的hexo分支,然后等Travis CI 构建并自动部署成功后。点击博文发现表格多了一行。 总结这样做虽然能很好的实现自动部署的功能，但是有个问题也要注意，就是博客源码公开问题，如果对博客源码不介意的可以直接使用公开仓库，如果介意那就没有办法了，除非使用付费的私有仓库，或者把项目放在Coding上去，因为上有提供免费的私有仓库。就我个人认为，既然是自己的博客，本来就是要给人看的，博客源码也谈不上存在什么隐私。]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>Travis CI</tag>
+        <tag>自动部署</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[2017秋季阅读计划]]></title>
+    <url>%2F2017%2F10%2F12%2F2017-fall-reading-plan.html</url>
+    <content type="text"><![CDATA[前言这学期的课程基本上已经都是专业课了，步入大三，作为软件工程专业的学生，专业知识的学习非常重要，同时我们也必须在课下有自己的自觉性。本学期，就《软件需求分析》课程要求，制定了自己的阅读计划——精读一本关于软件需求与分析方面的书籍，经过查阅资料，我选择阅读电子工业出版社出版的徐峰编写的《有效需求分析》。制定了的阅读详细计划。 内容简介本书是围绕着“我们要做什么，应该如何思考？”为主线展开的。用故事、案例，让大家从中感悟到需求分析的有效思维，并且使用一系列的“任务指引卡”模型帮助大家快速记忆。本书首先借助生活中的隐喻故事帮助读者建立“问题级需求”思考意识；接着通过一个需求变更处理实例阐释如何在日常需求工作中落实“业务驱动、用户导向的需求思想”；然后引出“组织应用类软件系统需求全景图”，帮助理解需求分析的四条主线：价值需求、功能需求、数据需求和非功能需求。 作者简介徐锋,资深需求咨询师，致力于IT系统、互联网及消费电子产品的用户研究，需求分析与产品策划的研究，擅长从生活、实战中抽取可复制、可落地的工作方法。在过去的十几年时间里，为诸多大型金融机构、政府组织、通讯运营商、互联网公司、消费电子厂商、行业软件开发商提供过卓有成效的咨询与培训服务。著有《软件需求*实践》等畅销书籍，多次受邀成为中国软件技术大会、中国软件工程大会、MPD等大会的演讲嘉宾。 阅读计划依据本书的分层体系，将阅读计划也作同样的分层递进；第一部分是引导篇，主要介绍的是需求的全景图，计划读完此篇发表一篇阅读笔记；第二部分是价值需求篇，主要介绍三步完成价值续需求的分析，计划读完此篇发表一篇阅读笔记；第三部分是详细需求篇，这是本书重点篇幅，依据包含的三条主线，计划在这个篇幅下面发表三篇阅读笔记；第四部分是补充篇，介绍的是规则与约束相关的内容，计划读完这篇发表一篇阅读笔记。 阅读笔记名称 主要内容 发表时间 有效需求分析阅读笔记一 需求分析全景图 2017-10-14 有效需求分析阅读笔记二 价值需求主线 2017-10-28 有效需求分析阅读笔记三 功能主线 2017-11-3 有效需求分析阅读笔记四 数据主线 2017-11-38 有效需求分析阅读笔记五 质量主线 2017-12-16 有效需求分析阅读笔记六 规则与约束 2017-12-30]]></content>
+      <categories>
+        <category>软件需求与分析</category>
+      </categories>
+      <tags>
+        <tag>阅读计划</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[如何做好需求分析]]></title>
+    <url>%2F2017%2F09%2F29%2Fgood_demand_and_analysis.html</url>
+    <content type="text"><![CDATA[前言这学期的《软件需求与分析》课可以说是软件工程专业比较重要的一门课。如何做好软件需求分析就等同于如何做好一个项目。客户对需求一改再改，如果我们只是一味的去抱怨，而不去思考客户对需求更改的原因是什么，不了解业务，那我们做出来的产品肯定得不到客户的认可。通过阅读我们应当怎样做需求分析这一系列的文章，我总结出来做好软件需求分析需求从这几方面入手。首先是做需求调研，就是采集需求这个阶段，在这个阶段其实是一个反复循环的过程：需求捕获——需求整理——需求验证——再需求捕获……；在每一次做完需求调研后就要做一次需求分析，并且等到下一次去做需求调研时，我们应该首先将上一次的需求分析结果与客户进行确认。然而在每次的需求分析阶段其实也是一个比较复杂的分析过程，我们需求画大量的UML图（例如用例图），对角色功能进行分析，对业务流程进行分析等。最后我们还需要做好需求确认工作，写好需求规格说明书然后评审签字确认。 要点提炼许多需求分析工作都是从需求调研开始的，需求调研工作既是一份技术活更是一份体力活。它要求我们具有一种理解能力，设计能力，更要求我们具有一种与人交往与沟通的能力。 开研讨会捕获需求我们需求获得客户的需求，必须要了解业务，要想了解业务，一是可以学习相关的知识，最有效的方法就是开业务研讨会，需求研讨会等，在会上我们不但可以更好的和客户交流整个流程，还可以讨论一些比较细节的地方。但是在组织研讨会的同时必须注意两点：有效抑制个性化差异，分模块组织专项研讨会。 学会需求捕获整个需求分析过程是一个迭代的过程，在需求捕获这个阶段，往往不是考验我们的专业知识，而是涉及人际交往，沟通理解等方面。如果学会了如何捕获客户的需求，那我们的项目成功的概率就会得到质的飞跃。在学会捕获需求之前我们要清楚的认识到软件需求不仅仅是客户嘴里说出来的。还有两类需求需要我们自己去发现：一是客户嘴里没有说的需求，二是客户压根没有想到的需求。知道这些后如果我们不能更好的处理与客户交流的方式，那一切都是百搭，在与客户讨论需求过程中，态度决定一切，既不能让自己处于被动状态，对客户提出的所有需求都记下来然后不加分析地给开发人员；也不能盲目主动，不分析客户的需求，按照自己的想法来，最后交付的时候客户说这不是自己想要的软件。最明智的做法是先跟客户谈业务，先谈论业务流程，在此阶段我们还要多问为什么，这样可以让我们深入地了解这些领域的知识，站在客户的角度去思考问题，进而能够深入理解客户为什么要提出他们的那些业务需求。 功能角色分析当我们经过一番忙碌，将需求中的第一手资料从调研现场捕获回来后我们就要对需求进行行之有效的分析，而这种分析首先应当从功能角色分析开始，所谓的功能角色分析就是从一个外部用户的视角分析整个软件系统能够提供的功能，以及这些功能到底提供给那些角色使用。而对一个系统进行功能和角色方面的梳理和分析，可以采用画用例图的方法。运用这种方法对业务需求进行分析、抽象、整理、提炼进而形成用例模型。我们在画用例图的过程中不能以一个开发者的角色来绘制，许多描述信息也绝不能按照开发者的思维和习惯去写，而是要贴近客户，因为用例图的视角是用户。所以描述信息应该迎合用户平时的习惯用语。 业务流程分析做好角色分析后，最重要的一步就是要做好业务流程分析。文章作者在这一章中用了许多例子来说明问题，在分析ERP对企业流程改进的例子中，作者分析出来的思路是清除低效环节、简化业务瓶颈、整合可用资源，以及将繁琐任务自动化。计算机信息化管理并不是万能的，它并不能代替现实世界中的所有工作。因此我们进行业务流程分析，就是要分析业务流程中哪些是需要信息化管理的，而哪些则不需要。另外，业务流程分析的另一个重要的分析内容就是流程差异化分析。不同的领导有不同的思路，不同的单位有不同的情况。因此，我们在进行流程分析的时候，常常面临流程差异化的问题。 业务领域分析在需求分析工作中，最后一项分析工作就是业务领域分析啦。业务领域分析，就是对需求分析中涉及到的业务实体，以及它们相互之间关联关系的分析。什么叫业务领域，就是客户所在的知识领域，譬如财务人员所在的是财务领域，税务人员所在的是税务领域。不同的知识领域拥有各自不同的领域知识，需求分析人员就应该通过客户中的领域专家去学习这些知识、掌握这些要点，并最终体现在我们的需求分析中。我们进行业务领域分析，就是通过与用户进行交流，掌握领域知识，然后绘制成业务领域模型，去指导我们软件开发的过程。其中，我们可以通过两种分析方法一步步进行分析：原文分析法与领域驱动设计。 挖掘非功能需求需求分析人员最容易忽略的部分就是非功能需求。非功能需求更加靠近的是技术，是设计，是实现，是架构师关注的内容，是需求人员最不擅长的方面，这也是非功能需求为什么常常被忽略的重要原因。正因为如此，架构师应当尽早参与到项目中，参与到需求分析中，尽早分析需求的技术可行性，尽早考虑性能、安全性、可靠性等非功能需求，尽早开始架构设计。 非功能需求可以简单归纳为“URPS+”，即可用性（Usability）、可靠性（Reliability）、性能（Performance）、可支持性（Supportability）以及其它（+）。，将我们分析出来的功能中所潜在的、特殊的非功能需求挖掘出来，提前进行分析设计，对于可行性不高的应及时与客户商讨，才能有效地避免日后存在的这些方面的风险。 做好需求列表需求列表，又称之为需求跟踪表，是最原始的、用户对业务需求的描述。它不掺杂任何需求分析人员对业务需求的分析与设计，而是以简短扼要的语句，以业务人员的口吻表述的，今后要开发的这个系统应当提供给他们的各项功能。 首先，需求列表不掺杂我们对业务需求的任何分析与设计，这是需求列表的核心，也是它存在的意义。其次，需求列表应当是站在业务人员的视角，对业务需求的简明扼要的描述。在需求列表中应当剔除那些客户对系统设计的内容。最后，需求列表也不是一步到位的，而是经过由粗到细逐渐整理形成的。 写好需求规格说明书我们之所以要编写自己的需求规格说明书，就是要本着实事求是、切实可行的态度，去描述用户的业务需求。那些不可行的需求被摒弃，或者换成更加可行的解决方案。这就是需求规格说明书的重要作用。领域驱动设计所提倡的就是要让用户、需求分析员、开发人员站在一个平台，使用统一的语言（一种混合语言），来表达大家都清楚明白的概念 。我们不能拿着用户编写的原始需求就开始开发，只有依据自己的公司、项目、特别是需求分析中采用的方法，写出一份既是从用户角度描述的系统业务需求说明书，又是一份指导开发人员完成设计与开发的技术性文档。 图示]]></content>
+      <categories>
+        <category>软件需求与分析</category>
+      </categories>
+      <tags>
+        <tag>阅读笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[System Error. Code:1722. RPC服务器不可用解决办法]]></title>
+    <url>%2F2017%2F09%2F25%2FstarUML_error.html</url>
+    <content type="text"><![CDATA[问题最近在软件设计上机课的时候，使用 starUML 建模工具画UML图的时候总是弹出一条如下信息虽然是错误，但是点击确定后软件能正常使用，可是这样还是不太好。一般来说出现这种错误应该是某个windows 服务没有打开而导致的问题。 解决办法经过上网查资料，发现只要打开RPCSS服务就可以了，可是我却发现我这里RPCSS服务是正在运行，既是重启也不管用。没有办法，继续查资料，最后发现原来是 Print Spooler 这个服务没有启动,只要启动这个服务就可以了。于是我在服务里看，原来这个服务真的是关闭状态，而且还是禁用。将这个服务改启动为自动，并且启动后发现再次打开 starUML 的时候没有报错 后文但是我这里为什么 Print Spooler 服务是禁用的呢，经过回想，发现之前我嫌win 10 有太多无用的服务，于是就关闭了不少，其中就包括这里的 Print Spooler 服务（与打印有关的服务）。]]></content>
+      <categories>
+        <category>软件问题解决</category>
+      </categories>
+      <tags>
+        <tag>starUML</tag>
+        <tag>RPC服务器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Git学习笔记]]></title>
+    <url>%2F2017%2F08%2F26%2Flearn-git.html</url>
+    <content type="text"><![CDATA[前言 本文档笔记是本人通过学习廖雪峰Git教程的整理而来 本文档主要记录本人当时在学习过程中认为重要的概念和命令 创建一个版本库123mkdir learngit //使用命令创建一个目录cd learngit //进入这个目录pwd //用于显示当前目录 初始化仓库1git init 添加文件到仓库12第一步：git add &lt;file&gt;第二步：git commit -m &apos;本次提交的说明&apos; 12git status:查看当前Git仓库的状态，是否有文件没有提交，让我们掌握仓库最新的状态git diff: 查看不同，当修改文件后，可以查看修改了什么内容（只适用于文本文件） 实现版本之间回退12git log:显示从最近到最远的提交日志git log --pretty=oneline:如果信息太多，使用这行命令 在Git中，用HEAD表示当前版本,上一个版本就是HEAD^，上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。 一大串类似882e1e0...67hko896的是commit id 版本号 git reset --hard HEAD^: 回退到上一个版本此时，当再次使用git log命令时，发现之前的版本已经消失了，此时想要再次回到那个版本，有两种方式：一种是当命令窗口没有关闭时，找到那个版本的版本号，如：81ac3c5，此时又回到最新的那个版本的命令是： 1git reset --hard 81ac3c5 如果已经过去很久了，已经记不得想要回退的版本的ID号，此时可以依据这个命令来找回版本号：1git reflog 工作区与暂存区的概念 工作区（Working Directory）：就是能在电脑上看到的目录，比如仓库文件夹 版本库（Repository）：工作区里有一个隐藏目录.git ，这个不算工作区，而是git的版本库前面我们讲了往Git版本库里添加文件的时候，分两步，这两步更详细的说是： 第一步使用git add 把文件添加进去，实际上就是把文件修改添加到暂存区； 第二步使用git commit提交修改，实际上是把暂存区的所有内容提交到当前分支因为我们创建Git版本库的时候，Git自动为我们创建了唯一的一个master 分支，而git commit就是往 master分支上提交更改。也可以简单理解为需要提交的文件修改通通放到了暂存区，等到要提交的时候，一次性提交暂存区里所有的文件到分支。 注意点： git diff 是工作区与暂存区的对比git diff -- cached 是暂存区与分支的对比git diff HEAD -- &lt;file&gt; 是工作区与分支的对比 撤销修改在以下三种情况下可以撤销修改： 修改了文件，没有添加到暂存区（修改了工作区）git checkout -- &lt;file&gt; 修改文件后添加到了暂存区，但是没有提交到分支（修改了暂存区）git reset HEAD &lt;file&gt; //把暂存区的修改回退到工作区git checkout -- &lt;file&gt;//把工作区的修改撤销 已经提交到了本地仓库分支，没有同步到远程仓库（版本回退即可）git reset --hard HEAD^ 删除文件以及恢复文件当我们使用 rm 命令或者直接在图形界面删除文件后，只是修改了工作区，若先使用 git rm &lt;file&gt; 命令删除文件，此时不仅修改了工作区，还修改了暂存区，此时使用撤销修改的命令还能找回被删除的文件。当删除操作被提交到分支后，只能使用版本回退操作来找回删除的文件。 注：git rm &lt;file&gt; 命令相当于先执行了rm命令 ，然后把工作区的修改添加到了暂存区，也就是说使用git rm &lt;file&gt;命令后不仅工作区的文件被删除了，也把删除操作添加到了暂存区。这就告诉我们，要想快速删除文件并提交到分支，只需执行git rm &lt;file&gt; 命令后commit就行了，如果想要更加谨慎，可以先使用rm 命令删除工作区中的文件，此时若想要撤销删除可以使用git checkout -- &lt;file&gt; 命令；如果想要添加修改操作到暂存区，使用git rm &lt;file&gt; 命令，到了这一步如果想要撤销删除可以先使用git reset HEAD &lt;file&gt; 命令撤销对暂存区的修改，然后使用 git checkout -- &lt;file&gt;命令来撤销对工作区的修改；如果已经把修改操作提交到了分支，此时想要撤销删除，找回文件则只能使用版本回退操作，即使用git reset --hard HEAD^命令。 添加远程库，并保持同步 当我们的系统之前从未使用SSH进行加密传输操作时，我们应该首先在用户主目录下创建SSH Key，因为你的本地Git 仓库和GitHub 仓库之间的传输是通过SSH 加密的。 在Github 上创建一个和本地仓库同名的仓库，要让本地仓库与该远程仓库关联可以使用命令： 1git remote add origin git@server-name:path/repo-name.git 关联后，使用命令git push -u origin master第一次推送master 分支的所有内容例如： 此后，每次本地提交后，要想实现远程仓库的同步，只需使用命令git push origin master推送最新的修改 从远程仓库克隆在合适的目录下使用命令1git clone git@server-name:path/repo-name.git 例如: 创建与合并分支 创建一个名为dev的分支 1git branch dev 切换到dev分支 1git checkout dev 以上两步可以用一条下面的命令完成 1git checkout -b dev //加上-b 参数表示创建并切 查看分支情况 1git branch //这个命令会列出所有的分支，并且在当前分支上会标注星号* 把dev分支的工作合并分支master上 1git checkout master //首先切换到master分支git merge dev //合并指定分支（dev）到当前分支（master） 删除分支 1git branch -d dev //删除分支 dev 分支合并时冲突解决当我们在两个分支上对同一个文件进行修改，并且修改的内容不一样，此时合并这两个分支时就会产生冲突此时查看该修改的文件时，就会发现Git用&lt;&lt;&lt;&lt;&lt;&lt;&lt;，=======，&gt;&gt;&gt;&gt;&gt;&gt;&gt;标记出不同分支的内容，此时我们需要手动修改文件，删除Git的标记，然后将修改后的文件先添加到暂存区，然后提交到分支提交成功后使用命令：git log --graph --pretty=oneline --abbrev-commit可以看到分支合并图 分支管理策略通常，合并分支的时候，Git会使用Fast forward模式，当是在这种模式下删除分支后就会丢掉分支的信息，如果我们想要在删除分支后还想在分支历史上看到分支的信息就可以强制禁用Fast forward 模式，此时Git 会在合并分支时生成一个新的commit：强制禁用Fast forward 模式的命令：1git merge --no-ff -m &apos;merge with no-ff&apos; dev //因为本次合并会生成一个commit ，所以需要加上 -m 参数说明 保存现场，修复bug后恢复我们在开发过程中需要经常修复软件中发现的bug，在git中我们就可以通过创建一个临时的分支来修复bug，修复bug后合并分支，然后删除临时分支但是如果我们在dev分支上的内容还没提交怎么办，此时我们可以使用命令来保存现场：1git stash 此时再查看Git库的状态就是干净的。当我们在master分支上通过创建临时分支修复bug后，再checkout 回dev分支时，我们有两条命令都可以恢复修复bug之前dev分支的状态：12（1）git stash apply // 恢复工作现场，但是不删除现场，就是说以后还可以恢复到该状态（2）git stash pop // 恢复工作现场后删除stash的内容 我们可以使用命令git stash list 来查看有多少现场被保存了，我们也可以多次使用stash，恢复的时候，通过 list后查看stash 的值， 然后通过恢复现场的命令来选择回到具体哪一个现场，如：12(1) git stash apply stash@&#123;1&#125; //恢复到 stash@&#123;1&#125; 后不删除该现场(2) git stash pop stash@&#123;0&#125; //恢复到 stash@&#123;0&#125; 后删除该现场 强行删除没有完全合并的分支当我们要添加一个新功能时我们会新建一个分支来进行添加，等到要合并新功能的分支到主分支时，接到通知说该新功能不需要了，此时如果我们删除该新功能分支会提示我们该新功能分支没有完全合并，如果确认要删除它，执行：git branch -D &lt;分支名称&gt;使用这个命令就可以删除未合并的分支，其实就是将小写 d 换成大写D 多人协作开发我们一般在开发中都是多人协作开发项目的,当你clone你的另一名小伙伴的项目库到你电脑上后，默认你只能看到该项目的本地master分支，你如果想要在dev分支上开发，就必须创建远程origin的dev分支到本地来，使用的命令是：1git checkout -b dev origin/dev 这样你就可以继续在dev上修改，修改完之后还可以 push dev分支到远程库，但是如果你的小伙伴也push了一次到远程库，并且此时你和你的小伙伴都对同样的文件进行了修改，你现在试图推送该分支到远程库，结果出现推送失败，因为你的提交与你小伙伴的最新提交之间有冲突。此时根据提示我们先用git pull把最新的提交从 origin/dev抓取下来，然后在本地合并解决冲突后然后提交分支并且推送dev到远程库。有的时候，我们git pull也会失败，原因是因为没有指定本地 dev 分支与远程origin/dev 分支的链接。我们根据提示，设置链接 设置的命令如提示:1git branch --set-upstream-to=origin/dev 此时就可以git pull 了，但是在本地合并时还会有冲突，此时我们通过手动解决冲突后然后推送到远程库。小结： 查看远程库的信息，使用命令git remote -v 本地新建的分支如果不推送到远程对其他人是不可见的 在本地创建和远程分支对应的分支使用git checkout -b branch-name origin/branch-name 本地和远程分支的名称最好一致 创建和操作标签为了更加方便的操作不同的版本，使用commit号（如：fs3k1hgk）是非常不方便的，如果使用版本号如v 1.2等标号就能很快的确认一个版本.标签：tag就是一个让人容易记住的有意义的名字，它跟某一个commit 绑在一起。它可以类似的理解为 IP 与域名的关系. 使用如下命令用于新建一个标签，默认为HEAD，也可以指定一个commit id1234git tag &lt;tagname&gt; 如：git tag v1.0git tag &lt;tagname&gt; &lt;commit id&gt; 如：git tag v1.0 ew326gd | git tag v 1.0 HEAD@&#123;1&#125; 注: 标签不是按时间顺序列出，而是按字母排序的。可以用git show &lt;tagname&gt;查看标签信息 删除一个本地标签git tag -d &lt;tagname&gt; 推送一个本地标签到远程库git push origin &lt;tagname&gt; 推送全部未推送到远程库的标签到远程库git push origin --tags 删除一个已经推送到远程库的标签12git tag -d &lt;tagname&gt; //先删除本地标签git push origin:refs/tags/&lt;tagname&gt; // 再删除远程标签 一个本地库关联多个远程库由于git本身是分布式版本控制系统，可以同步多个不同的远程库。例如可以同时同步到GitHUb和码云，但是我们在使用多个远程库时要注意，因为git给远程库起的默认名称是origin，如果有多个远程库，我们就需要使用不同的名称来标识不同的远程库。一般关联多个远程库分为下面几个步骤： 如果之前关联过一个远程库，且远程库的名称是默认的origin，此时你可以继续保留这个库或者先删除这个库，然后再关联并且起一个更加有辨识度的名称 1git remote rm origin //删除已经关联的名为origin 的远程库 接着再关联如GitHub上的远程库，并将远程库的名称叫做 GitHub,不使用默认的名称 1git remote add github git@github.com:dmego/learngit.git 然后再关联一个远程仓库，如码云上的远程库，并将远程库的名称叫做gitee 1git remote add gitee git@gitee.com:dmocgo/learngit.git 现在，我们用git remote -v查看远程库信息，可以看到两个远程库： 12345git remote -vgitee git@gitee.com:dmocgo/learngit.git (fetch)gitee git@gitee.com:dmocgo/learngit.git (push)github git@github.com:dmego/learngit.git (fetch)github git@github.com:dmego/learngit.git (push) 如果要推送到GitHub，使用命令： 1git push github master 如果要推送到码云，使用命令： 1git push gitee master 这样一来，我们的本地库就可以同时与多个远程库同步 自定义Git 让Git命令显示颜色，输出更加醒目： 1git config --global color.ui true 忽略特殊的文件，其中忽略文件的原则是： 忽略操作系统自动生成的文件，如缩略图忽略编译生成的中间文件，可执行文件，也就是说一个文件时通过其他文件自动生成的就没有必要放进版本库了，例如java编译产生的.class 文件忽略带有敏感信息的配置文件，比如保存了数据库密码的配置文件 我们在Git工作区的根目录下创建一个特殊的 .gitignore文件，然后把要忽略的文件名写进去，Git就会每次在提交的时候自动忽略这些文件，我们不需要从头写一个.gitignore文件，GitHub已经为我们准备了各种配置文件，所有的配置文件都可以在线浏览：https://github.com/github/gitignore。 有的时候，你想添加一个文件到git ，但是却发现添加不了，原因可能是这个文件被忽略了，如果想强制添加可以使用命令：1git add -f &lt;filename&gt; 还有的时候发现可能是 .gitignore文件写错了，需要找出来到底哪个规则写错了，可以使用命令检查：1git check-ignore -v &lt;filename&gt; 配置别名，简化命令。有时候命令太长或者单词不好记就可以使用Git来配置别名来达到高效的目的，例如将命令git status简化为git st:1git config --global alias.st status 注意：--global 参数是全局参数，也就是这些命令在这台电脑的所有Git 仓库下都可以使用（是针对当前用户起作用），如果不加这个参数，就只能对当前仓库起作用。每个仓库的配置文件都放在.git/config 文件中，其中别名就在 [alias] 后面，要想删除别名直接把对应的那行删除就行了而每个用户的配置文件放在用户主目录下的一个隐藏文件.gitconfig中。其中别名就在 [alias]后面，要想删除别名直接把对应的那行删除就行了。 搭建Git服务器教程地址：廖雪峰GIt教程]]></content>
+      <categories>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[七里香]]></title>
+    <url>%2F2017%2F08%2F24%2Fdaphne-odera.html</url>
+    <content type="text"><![CDATA[席慕蓉 溪水急着要流向海洋浪潮却渴望重回土地在绿树白花的篱前曾那样轻易地挥手道别而沧桑的二十年后我们的魂魄却夜夜归来微风拂过时便化作满园的郁香]]></content>
+      <categories>
+        <category>情</category>
+      </categories>
+      <tags>
+        <tag>小诗</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[第三个巷口]]></title>
+    <url>%2F2017%2F06%2F14%2Fthird-lane.html</url>
+    <content type="text"><![CDATA[木青子日 我住的那条街道上有一个流浪的南方姑娘她喜欢云的白天她喜欢星的黑夜在北方的第六百五十六个晚上雨落在第三个巷口的地方南方姑娘啊她悄然离开了这座城市回到了桃花十里的故乡]]></content>
+      <categories>
+        <category>情</category>
+      </categories>
+      <tags>
+        <tag>幻觉</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[远和近]]></title>
+    <url>%2F2017%2F06%2F10%2Ffar-and-near.html</url>
+    <content type="text"><![CDATA[作者：顾城 ​ 你一会看我，一会看云 我觉得你看我时很远你看云时很近]]></content>
+      <categories>
+        <category>病</category>
+      </categories>
+      <tags>
+        <tag>幻觉</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[自杀者之歌]]></title>
+    <url>%2F2017%2F06%2F01%2Fsong-of-suicide.html</url>
+    <content type="text"><![CDATA[作者：海子伏在下午的水中窗帘一掀掀一两根树枝伸过来肉体，水面的宝石是对半分裂的瓶子瓶里的水不能分裂 伏在一具斧子上像伏在一具琴上还有绳索盘在床底下林间的太阳砍断你像砍断南风你把枪打开，独自走回故乡像一只鸽子倒在猩红的篮子上]]></content>
+      <categories>
+        <category>病</category>
+      </categories>
+      <tags>
+        <tag>抑郁成疾</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[有些冷暖]]></title>
+    <url>%2F2017%2F04%2F18%2Fsome-cold-and-warm.html</url>
+    <content type="text"><![CDATA[已经连续好几个星期没有好好睡一觉了也许是因为最近的事儿多没日没夜的忙起来，就忘记了许多闲常人间的，四月天，天空蓝了许多街头的柳絮，给人带来的不是诗情画意反而弥漫着一股糟糕的情绪好像每个人身上带着无数的刺有些偏距，但是却不像电影情节那样结局并不用看导演的心情跑龙套的小丑说他也会像男主角一样出名也许在某一天，也许在某一年好久没有见过那只橘黄色的肥猫了有人说是因为太胖走不动了也有人说是你行色太匆匆了]]></content>
+      <categories>
+        <category>语</category>
+      </categories>
+      <tags>
+        <tag>小冥</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[也许]]></title>
+    <url>%2F2016%2F11%2F20%2Fperhaps.html</url>
+    <content type="text"><![CDATA[舒婷 也许我们的心总是没有读者也许路开始已错结果还是错也许我们点起一个个灯笼又被大风一个个吹灭也许燃尽生命烛照黑暗身边却没有取暖之火也许泪水流尽土地更加肥沃也许我们歌唱太阳也被太阳歌唱着也许肩上越是沉重信念越是巍峨也许为一切苦难疾呼对个人的不幸只好沉默也许由于不可抗拒的召唤我们没有其它选择]]></content>
+      <categories>
+        <category>杂</category>
+      </categories>
+      <tags>
+        <tag>小诗</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[汉诺塔的图解递归算法]]></title>
+    <url>%2F2016%2F10%2F16%2Fhanoi.html</url>
+    <content type="text"><![CDATA[起源汉诺塔（又称河内塔）问题是源于印度一个古老传说的益智玩具。大梵天创造世界的时候做了三根金刚石柱子，在一根柱子上从下往上按照大小顺序摞着64片黄金圆盘。大梵天命令婆罗门把圆盘从下面开始按大小顺序重新摆放在另一根柱子上。并且规定，在小圆盘上不能放大圆盘，在三根柱子之间一次只能移动一个圆盘。 抽象为数学问题如下图所示，从左到右有A、B、C三根柱子，其中A柱子上面有从小叠到大的n个圆盘，现要求将A柱子上的圆盘移到C柱子上去，期间只有一个原则：一次只能移到一个盘子且大盘子不能在小盘子上面，求移动的步骤和移动的次数 解:(1) n == 1 ​ 第1次 1号盘 A—-&gt;C sum = 1 次 (2) n == 2 ​ 第1次 1号盘 A—-&gt;B​ 第2次 2号盘 A—-&gt;C​ 第3次 1号盘 B—-&gt;C sum = 3 次 （3）n == 3 ​ 第1次 1号盘 A—-&gt;C​ 第2次 2号盘 A—-&gt;B​ 第3次 1号盘 C—-&gt;B​ 第4次 3号盘 A—-&gt;C​ 第5次 1号盘 B—-&gt;A​ 第6次 2号盘 B—-&gt;C​ 第7次 1号盘 A—-&gt;C sum = 7 次 不难发现规律： ​ 1个圆盘的次数 2的1次方减1​ 2个圆盘的次数 2的2次方减1​ 3个圆盘的次数 2的3次方减1​ 。 。 。 。 。​ n个圆盘的次数 2的n次方减1 故：移动次数为：2^n - 1 ##调用方法的栈机制（特点：先进后出）从主线程开始调用方法（函数）进行不停的压栈和出栈操作，函数的调用就是将函数压如栈中，函数的结束就是函数出栈的过程，这样就保证了方法调用的顺序流，即当函数出现多层嵌套时，需要从外到内一层层把函数压入栈中，最后栈顶的函数先执行结束（最内层的函数先执行结束）后出栈，再倒数第二层的函数执行结束出栈，到最后，第一个进栈的函数调用结束后从栈中弹出回到主线程，并且结束。 算法分析（递归算法）我们在利用计算机求汉诺塔问题时，必不可少的一步是对整个实现求解进行算法分析。到目前为止，求解汉诺塔问题最简单的算法还是同过递归来求，至于是什么是递归，递归实现的机制是什么，我们说的简单点就是自己是一个方法或者说是函数，但是在自己这个函数里有调用自己这个函数的语句，而这个调用怎么才能调用结束呢？，这里还必须有一个结束点，或者具体的说是在调用到某一次后函数能返回一个确定的值，接着倒数第二个就能返回一个确定的值，一直到第一次调用的这个函数能返回一个确定的值。 实现这个算法可以简单分为三个步骤： （1） 把n-1个盘子由A 移到 B；（2） 把第n个盘子由 A移到 C；（3） 把n-1个盘子由B 移到 C； 从这里入手，在加上上面数学问题解法的分析，我们不难发现，移到的步数必定为奇数步： （1）中间的一步是把最大的一个盘子由A移到C上去；（2）中间一步之上可以看成把A上n-1个盘子通过借助辅助塔（C塔）移到了B上，（3）中间一步之下可以看成把B上n-1个盘子通过借助辅助塔（A塔）移到了C上； java源代码123456789101112131415161718192021222324252627282930313233343536373839404142package demo;/** * 目的：实现汉诺塔问题求解 * 作者：Dmego 时间：2016-10-15 */import java.util.Scanner;public class TowersOfHanoi &#123; static int m =0;//标记移动次数 //实现移动的函数 public static void move(int disks,char N,char M) &#123; System.out.println("第" + (++m) +" 次移动 : " +" 把 "+ disks+" 号圆盘从 " + N +" -&gt;移到-&gt; " + M); &#125; //递归实现汉诺塔的函数 public static void hanoi(int n,char A,char B,char C) &#123; if(n == 1)//圆盘只有一个时，只需将其从A塔移到C塔 TowersOfHanoi.move(1, A, C);//将编b号为1的圆盘从A移到C else &#123;//否则 hanoi(n - 1, A, C, B);//递归，把A塔上编号1~n-1的圆盘移到B上，以C为辅助塔 TowersOfHanoi.move(n, A, C);//把A塔上编号为n的圆盘移到C上 hanoi(n - 1, B, A, C);//递归，把B塔上编号1~n-1的圆盘移到C上，以A为辅助塔 &#125; &#125; public static void main(String[] args) &#123; Scanner imput = new Scanner(System.in); char A = 'A'; char B = 'B'; char C = 'C'; System.out.println("******************************************************************************************"); System.out.println("这是汉诺塔问题（把A塔上编号从小号到大号的圆盘从A塔通过B辅助塔移动到C塔上去"); System.out.println("******************************************************************************************"); System.out.print("请输入圆盘的个数："); int disks = imput.nextInt(); TowersOfHanoi.hanoi(disks, A, B, C); System.out.println("&gt;&gt;移动了" + m + "次，把A上的圆盘都移动到了C上"); imput.close(); &#125;&#125; 图解程序运行流程 （1）函数hanoi(int n,char A,char B,char C)的功能是把编号为n的圆盘借助B从A移动到 C上。（2）函数move(int n ,char N ,char M)的功能是把1编号为n的圆盘从N 移到M上 程序运行截图]]></content>
+      <categories>
+        <category>数据结构与算法</category>
+      </categories>
+      <tags>
+        <tag>汉诺塔</tag>
+        <tag>递归</tag>
+      </tags>
+  </entry>
+</search>
